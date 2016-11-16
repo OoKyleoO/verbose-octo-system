@@ -54,3 +54,16 @@ def rmse(prediction, ground_truth):
 
 print 'User-based CF RMSE: ' + str(rmse(user_prediction, test_data_matrix))
 print 'Item-based CF RMSE: ' + str(rmse(item_prediction, test_data_matrix))
+
+# calculate sparisty of MovieLens dataset
+sparsity=round(1.0-len(df)/float(n_users*n_items),3)
+print 'Sparsity Level of MovieLens100k: ' + str(sparsity*100) + '%'
+
+# use SVD for model based content filtering
+import scipy.sparse as sp
+from scipy.sparse.linalg import svds
+
+u, s, vt = svds(train_data_matrix, k = 20)
+s_diag_matrix = np.diag(s)
+X_pred = np.dot(np.dot(u, s_diag_matrix), vt)
+print 'User-based CF RMSE (Model): ' + str(rmse(X_pred, test_data_matrix))
